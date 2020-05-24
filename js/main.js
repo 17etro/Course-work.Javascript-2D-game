@@ -1,7 +1,7 @@
 'use strict'
 let canvas = document.getElementById("canvas");
-
 let ctx = canvas.getContext("2d");
+
 canvas.width = 400;
 canvas.height = 600;
 
@@ -49,21 +49,48 @@ function visibility(nameID) {
 }
 //////////////////////////////////////////////////
 function start() {
+
     //Отключаем кнопку
     visibility('start_game');
     document.getElementById('start_game').setAttribute('disabled', 'disabled');
     //запускаем перед началом игры анимированый таймер
     let count = 0;
-   for (let i = 3 ; i >= 1 ; i-- ) {
+    for (let i = 3 ; i >= 1 ; i-- ) {
     setTimeout( ()=>{ document.getElementById(`text${i}`).style.animationPlayState='running'; }, count*1000 );
     count++;
    }
+
 ///////////////////////////////////////////////////
 
 //Основная функция, которая отрисовует игру
 function draw() {
+    //На каждом шаге очищаем игровое поле
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    //Прорисовуем фоновю картинку и миску
     ctx.drawImage(background, 0, 0);
+    //Условие, когда миска выходит за рамки игрового поля
+    if ( refr.x === 420 ) {
+        refr.x = -20;
+    }
+    else  if (refr.x === -20) {
+        refr.x = 420;
+    }
+    /////////////////////////////////////////////////////
     ctx.drawImage(bowl, refr.x, refr.y, 70, 70);
+
+// При каждой итерации, делаем поворот и смещение канваса так, что бы фрукт крутился.
+//Биндим команды 
+//!!!!!!
+    let dx = food.x + 20,
+    dy = food.y + 20;
+    ctx.save();
+    ctx.translate(dx, dy);
+
+    var time = new Date();
+    ctx.rotate(Math.sin(time / 500) / 2);
+
+    ctx.translate(-dx, -dy);
+//!!!!!!
 
     if (randCount < 5) {
     ctx.drawImage(foodImg[randCount], food.x, food.y, 40, 40);
@@ -71,6 +98,10 @@ function draw() {
     else {
         ctx.drawImage(foodImg[randCount], food.x, food.y, 40, 40);
     }
+//В конце возвращаем центральные оси канваса на место
+//!!!!!!!
+    ctx.restore();
+//!!!!!!
 
     ctx.fillStyle = "white";
 	ctx.font = "20px Arial";
