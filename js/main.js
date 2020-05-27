@@ -7,9 +7,10 @@ canvas.height = 600;
 
 const background = new Image();
 background.src = "img/bg.jpg";
-
 const bowl = new Image();
-bowl.src = "img/bowl.png"
+bowl.src = "img/bowl.png";
+const scoreImg = new Image();
+scoreImg.src = "img/score.png";
 
 let score = 0,
 foodImg = [],
@@ -27,7 +28,7 @@ for ( let i = 1; i <= 5; i++) {
 }
 let refr = {
     x: 250,
-    y : 540,
+    y : 530,
 
 }
 
@@ -48,6 +49,28 @@ function visibility(nameID) {
     document.getElementById(`${nameID}`).style.visibility = "hidden";
 }
 //////////////////////////////////////////////////
+
+//функция которая отрисовует игровые очки 
+function drawScore(score) {
+//рисуем прямоугольник
+ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, 35);
+    ctx.lineTo(canvas.width, 35);
+    ctx.lineTo(canvas.width, 0);
+    ctx.lineTo(0,0);
+    ctx.strokeStyle = '#142743';
+    ctx.stroke();
+    ctx.fillStyle = '#142743';
+    ctx.fill();
+ctx.closePath();
+//рисуем арбуз
+ctx.drawImage( scoreImg, 5, 5, 25, 25 );
+//записуем очки рядом
+ctx.fillStyle = "white";
+ctx.font = "20px Arial";
+ctx.fillText(score, 40, 25);
+}
 function start() {
 
     //Отключаем кнопку
@@ -59,62 +82,50 @@ function start() {
     setTimeout( ()=>{ document.getElementById(`text${i}`).style.animationPlayState='running'; }, count*1000 );
     count++;
    }
-
 ///////////////////////////////////////////////////
 
 //Основная функция, которая отрисовует игру
 function draw() {
     //На каждом шаге очищаем игровое поле
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    //Прорисовуем фоновю картинку и миску
+    //Прорисовуем фоновую картинку
     ctx.drawImage(background, 0, 0);
+    //Рисуем меню игровых очков 
+    drawScore(score);
     //Условие, когда миска выходит за рамки игрового поля
-    if ( refr.x === 420 ) {
+    if ( refr.x === 440 ) {
         refr.x = -20;
     }
-    else  if (refr.x === -20) {
+    else  if (refr.x === -40) {
         refr.x = 420;
     }
     /////////////////////////////////////////////////////
-    ctx.drawImage(bowl, refr.x, refr.y, 70, 70);
 
 // При каждой итерации, делаем поворот и смещение канваса так, что бы фрукт крутился.
 //Биндим команды 
 //!!!!!!
-    let dx = food.x + 20,
-    dy = food.y + 20;
+    let dx = food.x + 20, 
+    dy = food.y + 20,
+    time = new Date();
+
     ctx.save();
     ctx.translate(dx, dy);
-
-    var time = new Date();
     ctx.rotate(Math.sin(time / 500) / 2);
-
     ctx.translate(-dx, -dy);
 //!!!!!!
 
-    if (randCount < 5) {
     ctx.drawImage(foodImg[randCount], food.x, food.y, 40, 40);
-    }
-    else {
-        ctx.drawImage(foodImg[randCount], food.x, food.y, 40, 40);
-    }
+
 //В конце возвращаем центральные оси канваса на место
 //!!!!!!!
     ctx.restore();
 //!!!!!!
-
-    ctx.fillStyle = "white";
-	ctx.font = "20px Arial";
-    ctx.fillText(score, 20, 20);
-    
-
     if(dir == "left") refr.x -= 2;
     if(dir == "right") refr.x += 2;
     if(dir == "down") refr.x += 0;
     
-    food.y +=2;
-
-    if (randCount === 5 && food.y +15 == refr.y && food.x <= refr.x+40 && food.x >= refr.x) {
+    food.y += 2;
+    if (randCount === 5 && food.y + 15 === refr.y && food.x + 40 <= refr.x + 90 && food.x >= refr.x ) {
         score += 5;
         food =  {
             x: Math.floor(Math.random()*275+15),
@@ -123,7 +134,7 @@ function draw() {
         randCount = Math.floor(Math.random()*5 + 1);
     }
 
-     else if (food.y == refr.y && food.x <= refr.x+40 && food.x >= refr.x) {
+     else if (food.y + 15 === refr.y && food.x + 40 <= refr.x + 90 && food.x >= refr.x ) {
         score ++;
         food = {
             x: Math.floor(Math.random()*275+15),
@@ -131,11 +142,12 @@ function draw() {
        };
        randCount = Math.floor(Math.random()*5 + 1);
     }
-    else if (food.y > refr.y + 20) {
+    else if (food.y > refr.y + 17) {
         alert(`Game Over! You scored ${score} point`);
         clearInterval(game);
         location.reload();
     }
+    ctx.drawImage(bowl, refr.x, refr.y, 90, 80);
 }
 ////////////////////////////////////////////////////
 let game;
