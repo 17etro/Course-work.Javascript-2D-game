@@ -1,39 +1,51 @@
 'use strict'
 let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
+let score = 0;
+let foodImg = [];
+let randCount = Math.floor(Math.random()*5 + 1);
+let dir;
+let speedCount = 15;
 
 canvas.width = 400;
 canvas.height = 600;
 
+//Сборник картинок <-- Блок снизу
 const background = new Image();
 background.src = "img/bg.jpg";
+
 const bowl = new Image();
 bowl.src = "img/bowl.png";
+
 const scoreImg = new Image();
 scoreImg.src = "img/score.png";
-
-let score = 0,
-foodImg = [],
-randCount = Math.floor(Math.random()*5 + 1),
-dir,
-speedCount = 15;
 
 for ( let i = 1; i <= 5; i++) {
     foodImg[i] = new Image();
     foodImg[i].src = "img/" + i + ".png";
 }
+/////////////////////////////////
 
- let food = {
-     x: Math.floor(Math.random()*275+15),
-     y: -15,
-}
+//Назначим изначальные координаты появления первого фрукта и миски
+let food = {
+    x: Math.floor(Math.random()*275+15),
+    y: -15,
+};
 let refr = {
-    x: 250,
-    y : 530,
+   x: 250,
+   y : 530,
 
-}
+};
+//
 
+//Аудио сборник <-- Блок снизу
+let press_button_in_diff = new Audio('audio/knopka.mp3');
 
+let sound_of_horn1 = new Audio('audio/zvyk_gorna1.mp3');
+let sound_of_horn2 = new Audio('audio/zvyk_gorna2.mp3');
+//////////////////////////////
+
+//Функция, которая будет указывать направление миски при нажатие на стрелки и WASD
 document.addEventListener("keydown", direction);
 function direction(event) {
 	if(event.keyCode === 37 || event.keyCode === 97 || event.keyCode === 65 )
@@ -43,8 +55,9 @@ function direction(event) {
         else if (event.keyCode === 40 || event.keyCode === 115 || event.keyCode === 83 )
         dir = "down";
 }
-
 //
+
+//Функция, которая выбирает значения скорости игры и окрашивает выбраную сложность тенью
 function setSpeed(count) {
     speedCount = 15 - (count-1)*5;
     console.log(speedCount);
@@ -59,7 +72,7 @@ function setSpeed(count) {
 function visibility(nameID) {
     document.getElementById(`${nameID}`).style.visibility = "hidden";
 }
-//////////////////////////////////////////////////
+//
 
 //функция которая отрисовует игровые очки 
 function drawScore(score) {
@@ -75,16 +88,18 @@ ctx.beginPath();
     ctx.fillStyle = '#142743';
     ctx.fill();
 ctx.closePath();
+
 //рисуем арбуз
 ctx.drawImage( scoreImg, 5, 5, 25, 25 );
-//записуем очки рядом
+
+//записываем очки рядом
 ctx.fillStyle = "white";
 ctx.font = "20px Arial";
 ctx.fillText(score, 40, 25);
 }
-////////////////////////////////////////////
+//
 
-//Функция которая запускаеться при нажатие на кпопку
+//Функция которая запускаеться при нажатие на кпопку 'Press Enter to Start Game'
 function start() {
 
     //Отключаем кнопку
@@ -94,7 +109,15 @@ function start() {
     //запускаем перед началом игры анимированый таймер
     let count = 0;
     for (let i = 3 ; i >= 1 ; i-- ) {
-    setTimeout( ()=>{ document.getElementById(`text${i}`).style.animationPlayState='running'; }, count*1000 );
+    setTimeout( ()=>{ 
+        document.getElementById(`text${i}`).style.animationPlayState='running';
+        if ( i > 1 ) { 
+            sound_of_horn1.play(); 
+        }
+        else {
+            sound_of_horn2.play();
+        }
+    }, count*1000 );
     count++;
    }
 
@@ -169,18 +192,24 @@ let game;
 setTimeout(()=>{
     game = setInterval(draw ,1000/60);
 }, 3000);
-
 }
+
 //Добавляем нажатие конпки мышкой или через клавишу Enter
 document.getElementById('start_game').onclick = function() {
     start();
 }
-document.addEventListener("keydown", (event)=>{ 
+document.addEventListener("keydown", ( event ) => { 
     if (event.keyCode === 13) { 
-        start();}
+        start(); 
+    }
 });
+//Добавляем режим смены сложности и одновременно запускаем проигрыватель музыки
 for (let i = 1; i <= 3; i++) {
 document.getElementById(`changer${i}`).onclick = ()=> {
     setSpeed(i);
+     if ( !press_button_in_diff.paused ) {
+         press_button_in_diff.pause();
+     }
+     press_button_in_diff.play();
 }
 }
