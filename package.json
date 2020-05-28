@@ -1,0 +1,29 @@
+{
+  "name": "fruit_game",
+  "version": "1.0.0",
+  "description": "It is browser game, where you should catch fruits.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/17etro/-ourse-work-Javascript-2D-game.git"
+  },
+  "keywords": [
+    "game",
+    "JS",
+    "fruit",
+    "web",
+    "canvas",
+    "animation",
+    "http",
+    "https"
+  ],
+  "author": "Petro Petruk <petrpetryk2016@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/17etro/-ourse-work-Javascript-2D-game/issues"
+  },
+  "homepage": "https://github.com/17etro/-ourse-work-Javascript-2D-game#readme"
+}
