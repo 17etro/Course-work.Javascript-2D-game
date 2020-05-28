@@ -15,7 +15,8 @@ scoreImg.src = "img/score.png";
 let score = 0,
 foodImg = [],
 randCount = Math.floor(Math.random()*5 + 1),
-dir;
+dir,
+speedCount = 15;
 
 for ( let i = 1; i <= 5; i++) {
     foodImg[i] = new Image();
@@ -43,6 +44,16 @@ function direction(event) {
         dir = "down";
 }
 
+//
+function setSpeed(count) {
+    speedCount = 15 - (count-1)*5;
+    console.log(speedCount);
+    for (let k = 1 ; k <= 3; k++) {
+            document.getElementById(`changer${k}`).style.boxShadow = 'none'; 
+    }
+    document.getElementById(`changer${count}`).style.boxShadow = "#b3923a 1.5px 1.5px 1.5px 1.5px";
+}
+//
 
 //функция которая делает заданый элемент невидимым
 function visibility(nameID) {
@@ -71,18 +82,21 @@ ctx.fillStyle = "white";
 ctx.font = "20px Arial";
 ctx.fillText(score, 40, 25);
 }
+////////////////////////////////////////////
+
+//Функция которая запускаеться при нажатие на кпопку
 function start() {
 
     //Отключаем кнопку
     visibility('start_game');
     document.getElementById('start_game').setAttribute('disabled', 'disabled');
+
     //запускаем перед началом игры анимированый таймер
     let count = 0;
     for (let i = 3 ; i >= 1 ; i-- ) {
     setTimeout( ()=>{ document.getElementById(`text${i}`).style.animationPlayState='running'; }, count*1000 );
     count++;
    }
-///////////////////////////////////////////////////
 
 //Основная функция, которая отрисовует игру
 function draw() {
@@ -120,12 +134,13 @@ function draw() {
 //!!!!!!!
     ctx.restore();
 //!!!!!!
-    if(dir == "left") refr.x -= 2;
-    if(dir == "right") refr.x += 2;
+    if(dir == "left") refr.x = refr.x - 2 - ( score / speedCount );
+    if(dir == "right") refr.x = refr.x + 2 + ( score / speedCount );
     if(dir == "down") refr.x += 0;
     
-    food.y += 2;
-    if (randCount === 5 && food.y + 15 === refr.y && food.x + 40 <= refr.x + 90 && food.x >= refr.x ) {
+    food.y = food.y + 2 + Math.floor( (score / speedCount));
+
+    if (randCount === 5 && food.y >= refr.y - 20 && food.y <= refr.y - 15 && food.x + 40 <= refr.x + 90 && food.x >= refr.x ) {
         score += 5;
         food =  {
             x: Math.floor(Math.random()*275+15),
@@ -134,7 +149,7 @@ function draw() {
         randCount = Math.floor(Math.random()*5 + 1);
     }
 
-     else if (food.y + 15 === refr.y && food.x + 40 <= refr.x + 90 && food.x >= refr.x ) {
+     else if ( food.y >= refr.y - 20 && food.y <= refr.y - 15  && food.x + 40 <= refr.x + 90 && food.x >= refr.x ) {
         score ++;
         food = {
             x: Math.floor(Math.random()*275+15),
@@ -164,4 +179,8 @@ document.addEventListener("keydown", (event)=>{
     if (event.keyCode === 13) { 
         start();}
 });
-
+for (let i = 1; i <= 3; i++) {
+document.getElementById(`changer${i}`).onclick = ()=> {
+    setSpeed(i);
+}
+}
