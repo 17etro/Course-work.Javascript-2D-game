@@ -43,6 +43,15 @@ let press_button_in_diff = new Audio('audio/knopka.mp3');
 
 let sound_of_horn1 = new Audio('audio/zvyk_gorna1.mp3');
 let sound_of_horn2 = new Audio('audio/zvyk_gorna2.mp3');
+
+let easy_music = new Audio('audio/easy_music.mp3');
+easy_music.setAttribute('loop', 'loop');
+
+let medium_music = new Audio('audio/medium_music.mp3');
+medium_music.setAttribute('loop', 'loop');
+
+let hard_music = new Audio('audio/hard_music.mp3');
+hard_music.setAttribute('loop', 'loop');
 //////////////////////////////
 
 //Функция, которая будет указывать направление миски при нажатие на стрелки и WASD
@@ -110,19 +119,25 @@ function start() {
     let count = 0;
     for (let i = 3 ; i >= 1 ; i-- ) {
     setTimeout( ()=>{ 
-        document.getElementById(`text${i}`).style.animationPlayState='running';
-        if ( i > 1 ) { 
+        document.getElementById(`text${i}`).style.animationPlayState='running'; 
             sound_of_horn1.play(); 
-        }
-        else {
-            sound_of_horn2.play();
-        }
     }, count*1000 );
     count++;
    }
 
 //Основная функция, которая отрисовует игру
 function draw() {
+
+    if ( speedCount === 15) {
+        easy_music.play();
+    }
+    else if ( speedCount === 10 ) {
+        medium_music.play();
+    }
+    else {
+        hard_music.play();
+    }
+
     //На каждом шаге очищаем игровое поле
     ctx.clearRect(0,0,canvas.width,canvas.height);
     //Прорисовуем фоновую картинку
@@ -181,6 +196,17 @@ function draw() {
        randCount = Math.floor(Math.random()*5 + 1);
     }
     else if (food.y > refr.y + 17) {
+
+        if ( speedCount === 15 ) {
+            easy_music.pause();
+        }
+        else if ( speedCount === 10 ) {
+            medium_music.pause();
+        }
+        else {
+            hard_music.pause();
+        }
+
         alert(`Game Over! You scored ${score} point`);
         clearInterval(game);
         location.reload();
