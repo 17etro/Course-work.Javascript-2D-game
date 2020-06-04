@@ -45,7 +45,6 @@ let sound_of_horn1 = new Audio('audio/zvyk_gorna1.mp3');
 
 let easy_music = new Audio('audio/easy_music.mp3');
 easy_music.setAttribute('loop', 'loop');
-easy_music.volume = 0;
 
 let medium_music = new Audio('audio/medium_music.mp3');
 medium_music.setAttribute('loop', 'loop');
@@ -122,11 +121,14 @@ ctx.fillText(score, 40, 25);
 
 //Функция которая запускаеться при нажатие на кпопку 'Press Enter to Start Game'
 function start() {
-
     //Отключаем кнопку
     visibility('start_game');
     document.getElementById('start_game').setAttribute('disabled', 'disabled');
 
+    //Добавляем рестарт
+    document.getElementById('difficult').style.height = '250px';
+    document.getElementById('restart').style.visibility = 'visible';
+    
     //Отключаем смену сложности
     document.getElementById('changer1').setAttribute('disabled', 'disabled');
     document.getElementById('changer2').setAttribute('disabled', 'disabled');
@@ -265,4 +267,7 @@ document.getElementById('change_sound').onclick = function () {
         }
         flag = 1;
     }
+}
+document.getElementById('restart').onclick = function () {
+    location.reload();
 }

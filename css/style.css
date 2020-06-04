@@ -47,8 +47,9 @@ canvas {
     background: #f0c550;
     border-radius: 5px 0px 0px 5px;
     width: 100px;
-    height: 250px;
+    height: 200px;
     grid-area: 'm';
+    text-align: center;
 }
 .change_dif {
     margin: 0;
@@ -134,7 +135,18 @@ canvas {
     outline: none;
     border: none;
     padding-top: 2px;
-    margin-left: 33%;
-    margin-top: 5px;
     box-shadow: #b3923a 1.5px 1.5px 1.5px 1.5px;
+    margin-top: -5px;
+}
+.restart {
+    width: 80px;
+    height: 30px;
+    margin-top: 10px;
+    outline: none;
+    border: none;
+    background: #ffa500;
+    font-family: 'Raleway', sans-serif;
+    text-transform: uppercase;
+    box-shadow: #b3923a 1.5px 1.5px 1.5px 1.5px;
+    visibility: hidden;
 }
