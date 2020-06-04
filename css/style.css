@@ -2,13 +2,6 @@
     padding: 0;
     margin: 0;
 }
-canvas {
-    margin-top: 5%;
-    margin-left: 35%;
-    border-radius: 0px 10px 10px 10px;
-    background: #183052;
-    box-shadow: #12233b 2px 3px 2px 5px;
-}
 body {
     background: url(../img/body.jpg) no-repeat;
     background-size: cover;
@@ -19,8 +12,34 @@ span {
     color: white;
     font-size: 100px;
     position: fixed; 
-    left: 46%;
-    top: 38%; 
+}
+.wrapper_body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-area: 'c';
+}
+.game {
+  width: 500px;
+  height: 600px;
+  display: grid;
+  grid-template-columns: 100px 400px;
+  grid-template-areas: "m c";
+  margin-left: -100px;
+}
+canvas {
+    border-radius: 0px 10px 10px 10px;
+    background: #183052;
+    box-shadow: #12233b 2px 3px 2px 5px;
+}
+.wrapper {
+    height: 600px;
+    width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-area: 'c';
 }
 .difficult {
     margin: 0;
@@ -28,9 +47,8 @@ span {
     background: #f0c550;
     border-radius: 5px 0px 0px 5px;
     width: 100px;
-    position: absolute;
-    top: 10.2%;
-    left: 28.4%;
+    height: 165px;
+    grid-area: 'm';
 }
 .change_dif {
     margin: 0;
@@ -64,8 +82,6 @@ span {
 }
 .start {
     position: absolute;
-    left: 39.5%;
-    top: 35%;
     z-index: 9999;
     width: 250px;
     height: 200px;

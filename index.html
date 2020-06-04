@@ -8,31 +8,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    <div class="difficult">
-        <p class="change_dif">
-            Change difficult
-        </p>
-       <ul>
-           <li><button id="changer1" class="easy">
-            Easy
-           </button></li>
+        <div class="wrapper_body">
+       <div class="game">
+        <div class="difficult">
+            <p class="change_dif">
+                Change difficult
+            </p>
+           <ul>
+               <li><button id="changer1" class="easy">
+                Easy
+               </button></li>
+    
+               <li><button id="changer2">
+                Medium     
+               </button></li>
+    
+               <li><button id="changer3">
+                Hard           
+            </button></li>
+           </ul>
+        </div>
 
-           <li><button id="changer2">
-            Medium     
-           </button></li>
+        <div class="wrapper"> 
+            <canvas id="canvas"></canvas>
+            <button class="start" id="start_game">press enter to start game</button>
+                <span class="text3" id="text3">  3  </span>
+                <span class="text2" id="text2">  2  </span>
+                <span class="text1" id="text1">  1  </span>
+        </div>
 
-           <li><button id="changer3">
-            Hard           
-        </button></li>
-       </ul>
-    </div>
-    <button class="start" id="start_game">press enter to start game</button>
-    <p>
-        <span class="text3" id="text3">3</span>
-        <span class="text2" id="text2">2</span>
-        <span class="text1" id="text1">1</span>
-    </p>
+    </div> 
+</div>
     <script src="js/main.js"></script>
 </body>
 </html>

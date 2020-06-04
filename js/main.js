@@ -32,7 +32,7 @@ let food = {
     y: -15,
 };
 let refr = {
-   x: 250,
+   x: 150,
    y : 530,
 
 };
@@ -42,7 +42,6 @@ let refr = {
 let press_button_in_diff = new Audio('audio/knopka.mp3');
 
 let sound_of_horn1 = new Audio('audio/zvyk_gorna1.mp3');
-let sound_of_horn2 = new Audio('audio/zvyk_gorna2.mp3');
 
 let easy_music = new Audio('audio/easy_music.mp3');
 easy_music.setAttribute('loop', 'loop');
@@ -52,6 +51,9 @@ medium_music.setAttribute('loop', 'loop');
 
 let hard_music = new Audio('audio/hard_music.mp3');
 hard_music.setAttribute('loop', 'loop');
+
+let catch_fruit = new Audio('audio/catch_fruit.mp3');
+let catch_bonus = new Audio('audio/catch_bonus.mp3');
 //////////////////////////////
 
 //Функция, которая будет указывать направление миски при нажатие на стрелки и WASD
@@ -144,15 +146,6 @@ function draw() {
     ctx.drawImage(background, 0, 0);
     //Рисуем меню игровых очков 
     drawScore(score);
-    //Условие, когда миска выходит за рамки игрового поля
-    if ( refr.x === 440 ) {
-        refr.x = -20;
-    }
-    else  if (refr.x === -40) {
-        refr.x = 420;
-    }
-    /////////////////////////////////////////////////////
-
 // При каждой итерации, делаем поворот и смещение канваса так, что бы фрукт крутился.
 //Биндим команды 
 //!!!!!!
@@ -172,13 +165,14 @@ function draw() {
 //!!!!!!!
     ctx.restore();
 //!!!!!!
-    if(dir == "left") refr.x = refr.x - 2 - ( score / speedCount );
-    if(dir == "right") refr.x = refr.x + 2 + ( score / speedCount );
-    if(dir == "down") refr.x += 0;
+    if(dir === "left" && refr.x >= 0 ) refr.x = refr.x - 2 - ( score / speedCount );
+    else if(dir === "right" && refr.x <= 310 ) refr.x = refr.x + 2 + ( score / speedCount );
+    else if(dir === "down") refr.x += 0;
     
     food.y = food.y + 2 + Math.floor( (score / speedCount));
 
     if (randCount === 5 && food.y >= refr.y - 20 && food.y <= refr.y - 15 && food.x + 40 <= refr.x + 90 && food.x >= refr.x ) {
+        catch_bonus.play();
         score += 5;
         food =  {
             x: Math.floor(Math.random()*275+15),
@@ -188,6 +182,7 @@ function draw() {
     }
 
      else if ( food.y >= refr.y - 20 && food.y <= refr.y - 15  && food.x + 40 <= refr.x + 90 && food.x >= refr.x ) {
+        catch_fruit.play();
         score ++;
         food = {
             x: Math.floor(Math.random()*275+15),
