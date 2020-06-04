@@ -45,6 +45,7 @@ let sound_of_horn1 = new Audio('audio/zvyk_gorna1.mp3');
 
 let easy_music = new Audio('audio/easy_music.mp3');
 easy_music.setAttribute('loop', 'loop');
+easy_music.volume = 0;
 
 let medium_music = new Audio('audio/medium_music.mp3');
 medium_music.setAttribute('loop', 'loop');
@@ -54,6 +55,16 @@ hard_music.setAttribute('loop', 'loop');
 
 let catch_fruit = new Audio('audio/catch_fruit.mp3');
 let catch_bonus = new Audio('audio/catch_bonus.mp3');
+
+let sounds_obj = {
+    1 : press_button_in_diff,
+    2: sound_of_horn1,
+    3: easy_music,
+    4: medium_music,
+    5: hard_music,
+    6: catch_fruit,
+    7: catch_bonus,
+}
 //////////////////////////////
 
 //Функция, которая будет указывать направление миски при нажатие на стрелки и WASD
@@ -71,7 +82,6 @@ function direction(event) {
 //Функция, которая выбирает значения скорости игры и окрашивает выбраную сложность тенью
 function setSpeed(count) {
     speedCount = 15 - (count-1)*5;
-    console.log(speedCount);
     for (let k = 1 ; k <= 3; k++) {
             document.getElementById(`changer${k}`).style.boxShadow = 'none'; 
     }
@@ -117,6 +127,10 @@ function start() {
     visibility('start_game');
     document.getElementById('start_game').setAttribute('disabled', 'disabled');
 
+    //Отключаем смену сложности
+    document.getElementById('changer1').setAttribute('disabled', 'disabled');
+    document.getElementById('changer2').setAttribute('disabled', 'disabled');
+    document.getElementById('changer3').setAttribute('disabled', 'disabled');
     //запускаем перед началом игры анимированый таймер
     let count = 0;
     for (let i = 3 ; i >= 1 ; i-- ) {
@@ -233,4 +247,22 @@ document.getElementById(`changer${i}`).onclick = ()=> {
      }
      press_button_in_diff.play();
 }
+}
+//Включаем и выключаем звук в игре
+let flag = 0;
+document.getElementById('change_sound').onclick = function () {
+    if ( flag === 1) {
+        document.getElementById('sound').src = 'img/sound_on.png';
+        for (let key in sounds_obj ) {
+            sounds_obj[`${key}`].volume = 1;
+        }
+        flag = 0;
+    }
+    else  {
+        document.getElementById('sound').src = 'img/sound_off.png';
+        for (let key in sounds_obj ) {
+            sounds_obj[`${key}`].volume = 0;
+        }
+        flag = 1;
+    }
 }
