@@ -298,3 +298,13 @@ document.getElementById('paused').onclick = function () {
 document.getElementById('restart').onclick = function () {
     location.reload();
 }
+let coll = document.getElementById('rules_button');
+coll.addEventListener('click', function() {
+    let content = document.getElementById('rules');
+    if ( content.style.maxHeight ) {
+        content.style.maxHeight = null;
+    }
+    else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+    }
+})
