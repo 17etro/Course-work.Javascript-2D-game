@@ -6,6 +6,7 @@ let foodImg = [];
 let randCount = Math.floor(Math.random()*5 + 1);
 let dir;
 let speedCount = 15;
+let pause = false;
 
 canvas.width = 400;
 canvas.height = 600;
@@ -145,7 +146,7 @@ function start() {
 
 //Основная функция, которая отрисовует игру
 function draw() {
-
+    if ( pause === false ) {
     if ( speedCount === 15) {
         easy_music.play();
     }
@@ -224,6 +225,7 @@ function draw() {
     }
     ctx.drawImage(bowl, refr.x, refr.y, 90, 80);
 }
+}
 ////////////////////////////////////////////////////
 let game;
 setTimeout(()=>{
@@ -266,6 +268,31 @@ document.getElementById('change_sound').onclick = function () {
             sounds_obj[`${key}`].volume = 0;
         }
         flag = 1;
+    }
+}
+document.getElementById('pause').onclick = function () {
+    if (pause === false) {
+        pause = true;
+        document.getElementById('paused').style.visibility = 'visible';
+        document.getElementById('play').src = 'img/play.png';
+        for (let key in sounds_obj ) {
+            sounds_obj[`${key}`].volume = 0;
+        }
+    } 
+    else {
+        pause = false;
+        document.getElementById('paused').style.visibility = 'hidden';
+        document.getElementById('play').src = 'img/pause.png';
+        for (let key in sounds_obj ) {
+            sounds_obj[`${key}`].volume = 1;
+        }
+    }
+}
+document.getElementById('paused').onclick = function () {
+    pause = false;
+    document.getElementById('paused').style.visibility = 'hidden';
+    for (let key in sounds_obj ) {
+        sounds_obj[`${key}`].volume = 1;
     }
 }
 document.getElementById('restart').onclick = function () {

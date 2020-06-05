@@ -134,9 +134,7 @@ canvas {
     background: #ffa500;
     outline: none;
     border: none;
-    padding-top: 2px;
     box-shadow: #b3923a 1.5px 1.5px 1.5px 1.5px;
-    margin-top: -5px;
 }
 .restart {
     width: 80px;
@@ -149,4 +147,26 @@ canvas {
     text-transform: uppercase;
     box-shadow: #b3923a 1.5px 1.5px 1.5px 1.5px;
     visibility: hidden;
+}
+.pause {
+    margin-left: 5px;
+    outline: none;
+    border: none;
+    box-shadow: #b3923a 1.5px 1.5px 1.5px 1.5px;
+    background: #ffa500;
+}
+.paused {
+    position: absolute;
+    z-index: 1000;
+    width: 250px;
+    height: 200px;
+    background: #abcdef;
+    text-transform: uppercase;
+    font-family: 'Raleway', sans-serif;
+    font-size: 24px;
+    border: none;
+    outline: none;
+    visibility: hidden;
+    border-radius: 15px;
+    box-shadow: #12233b 2px 3px 2px 5px;
 }
