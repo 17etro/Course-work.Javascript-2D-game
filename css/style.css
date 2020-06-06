@@ -130,6 +130,7 @@ canvas {
    
  }
 }
+
 .change_sound {
     width: 30px;
     height: 30px;
@@ -229,4 +230,19 @@ canvas {
 }
 .bug {
     margin-top: 80px;
+}
+.endgame {
+    position: absolute;
+    z-index: 10200;
+    width: 250px;
+    height: 200px;
+    background: #dc143c;
+    text-transform: uppercase;
+    font-family: 'Raleway', sans-serif;
+    font-size: 24px;
+    border: none;
+    outline: none;
+    border-radius: 15px;
+    box-shadow: #12233b 2px 3px 2px 5px;
+    visibility: hidden;
 }

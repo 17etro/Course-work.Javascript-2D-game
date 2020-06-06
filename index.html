@@ -1,71 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game</title>
+    <title> Game </title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
 </head>
+
 <body>
-        <div class="wrapper_body">
-            <button id='paused' class='paused'>
-                Click to 
-                unpause
-            </button>
-       <div class="game">
+
+<div class="wrapper_body">
+    <button id='paused' class='paused'>
+                Click to unpause
+    </button>
+
+    <button id='endgame' class='endgame'>
+    </button>
+
+    <div class="game">
         <div id ='difficult' class="difficult">
+
             <p class="change_dif">
                 Change difficult
             </p>
-           <ul>
-               <li><button id="changer1" class="easy">
-                Easy
-               </button></li>
+
+            <ul>
+                <li>
+                    <button id="changer1" class="easy">
+                    Easy
+                    </button>
+                </li>
     
-               <li><button id="changer2">
-                Medium     
-               </button></li>
+                <li>
+                    <button id="changer2">
+                    Medium     
+                    </button>
+                </li>
     
-               <li><button id="changer3">
-                Hard           
-            </button></li>
-           </ul>
-           <button class='change_sound' id="change_sound">
+                <li>
+                    <button id="changer3">
+                    Hard           
+                    </button>
+                </li>
+            </ul>
+
+            <button class='change_sound' id="change_sound">
                 <img id='sound' src="img/sound_on.png" alt="1" height="25px" width='25px'>
-           </button>
-           <button id='pause' class='pause'>
+            </button>
+
+            <button id='pause' class='pause'>
                 <img id ='play' src="img/pause.png" alt="Поставить на паузу" width='25px' height='25px'>
-           </button>
-           <button id='restart' class='restart'>
+            </button>
+
+            <button id='restart' class='restart'>
                 restart
-           </button>
+            </button>
         </div>
 
         <div class="wrapper"> 
             <canvas id="canvas"></canvas>
-            <button class="start" id="start_game">press enter to start game</button>
-                <span class="text3" id="text3">  3  </span>
-                <span class="text2" id="text2">  2  </span>
-                <span class="text1" id="text1">  1  </span>
+
+            <button class="start" id="start_game"> press enter to start game </button>
+
+            <span class="text3" id="text3">  3  </span>
+            <span class="text2" id="text2">  2  </span>
+            <span class="text1" id="text1">  1  </span>
         </div>
 
-    </div> 
+    </div>    
 </div>
-    <button id='rules_button' class='rules_button'> rules of the game </button>
-    <div id='rules' class='rules'>
-        <h1> Правила игры </h1>
-        <p>Сейчас вас ожидает веселая игра, где нужно собирать фрукты в корзинку.</p>
-        <p>Каждый фрукт, который вы словили дает вам 1 очко, а бонус - целых 5!</p>
-        <p>С каждым словленным фруктом следующий будет словить тяжелее.</p>
-        <p>Цель игры собрать как можно больше фруктов.</p>
-        <h2>Управление</h2>
-        <p>Для того, что-бы начать игру нажмите "Enter".</p>
-        <p>Управлять корзиной можно на клавиши "W" и "S" или на стрелочки "влево" и "вправо". Остановить ее можно при нажатие "S" или стрелочки "вниз".</p>
-        <p>Вы можете сменить сложность на боковой панеле, так же можете отключить звук и поставить паузу.</p>
-        <p>Удачи!</p>
-        <p class='bug'>Нашел баг? Пиши сюда: <div class='gmail'>petrpetryk2016@gmail.com</div></p>
-    </div>
-    <script src="js/main.js"></script>
+
+<button id='rules_button' class='rules_button'> rules of the game </button>
+
+<div id='rules' class='rules'>
+    <h1> Правила игры </h1>
+        <p> Сейчас вас ожидает веселая игра, где нужно собирать фрукты в корзинку. </p>
+        <p> Каждый фрукт, который вы словили дает вам 1 очко, а бонус - целых 5! </p>
+        <p> С каждым словленным фруктом следующий будет словить тяжелее. </p>
+        <p> Цель игры собрать как можно больше фруктов. </p>
+    <h2> Управление </h2>
+        <p> Для того, что-бы начать игру нажмите "Enter". </p>
+        <p> Управлять корзиной можно на клавиши "W" и "S" или на стрелочки "влево" и "вправо". Остановить ее можно при нажатие "S" или стрелочки "вниз". </p>
+        <p> Вы можете сменить сложность на боковой панеле, так же можете отключить звук и поставить паузу. </p>
+        <p> Удачи! </p>
+    <p class='bug'>Нашел баг? Пиши сюда: <div class='gmail'> petrpetryk2016@gmail.com </div> </p>
+</div>
+
+<script src="js/main.js"></script>
 </body>
 </html>

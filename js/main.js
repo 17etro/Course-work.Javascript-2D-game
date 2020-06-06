@@ -11,6 +11,18 @@ let pause = false;
 canvas.width = 400;
 canvas.height = 600;
 
+//Назначим изначальные координаты появления первого фрукта и миски
+let food = {
+    x: Math.floor(Math.random()*275+15),
+    y: -15,
+};
+let refr = {
+   x: 150,
+   y : 530,
+
+};
+//
+
 //Сборник картинок <-- Блок снизу
 const background = new Image();
 background.src = "img/bg.jpg";
@@ -26,18 +38,6 @@ for ( let i = 1; i <= 5; i++) {
     foodImg[i].src = "img/" + i + ".png";
 }
 /////////////////////////////////
-
-//Назначим изначальные координаты появления первого фрукта и миски
-let food = {
-    x: Math.floor(Math.random()*275+15),
-    y: -15,
-};
-let refr = {
-   x: 150,
-   y : 530,
-
-};
-//
 
 //Аудио сборник <-- Блок снизу
 let press_button_in_diff = new Audio('audio/knopka.mp3');
@@ -56,6 +56,9 @@ hard_music.setAttribute('loop', 'loop');
 let catch_fruit = new Audio('audio/catch_fruit.mp3');
 let catch_bonus = new Audio('audio/catch_bonus.mp3');
 
+let game_over = new Audio('audio/game_over.mp3');
+
+//Обьект где храняться все звуки игры
 let sounds_obj = {
     1 : press_button_in_diff,
     2: sound_of_horn1,
@@ -64,6 +67,7 @@ let sounds_obj = {
     5: hard_music,
     6: catch_fruit,
     7: catch_bonus,
+    8: game_over,
 }
 //////////////////////////////
 
@@ -95,6 +99,15 @@ function visibility(nameID) {
 }
 //
 
+//Функция события нажатия Enter
+function pressButtonEnter( event ) { 
+    if (event.keyCode === 13) { 
+        start(); 
+    }
+};
+document.addEventListener("keydown", pressButtonEnter);
+//
+
 //функция которая отрисовует игровые очки 
 function drawScore(score) {
 //рисуем прямоугольник
@@ -109,10 +122,8 @@ ctx.beginPath();
     ctx.fillStyle = '#142743';
     ctx.fill();
 ctx.closePath();
-
 //рисуем арбуз
 ctx.drawImage( scoreImg, 5, 5, 25, 25 );
-
 //записываем очки рядом
 ctx.fillStyle = "white";
 ctx.font = "20px Arial";
@@ -122,31 +133,36 @@ ctx.fillText(score, 40, 25);
 
 //Функция которая запускаеться при нажатие на кпопку 'Press Enter to Start Game'
 function start() {
-    //Отключаем кнопку
-    visibility('start_game');
-    document.getElementById('start_game').setAttribute('disabled', 'disabled');
+//Убираем событие старта игры
+document.removeEventListener("keydown", pressButtonEnter);
+//Отключаем кнопку
+visibility('start_game');
+document.getElementById('start_game').setAttribute('disabled', 'disabled');
 
-    //Добавляем рестарт
-    document.getElementById('difficult').style.height = '250px';
-    document.getElementById('restart').style.visibility = 'visible';
+//Добавляем рестарт
+document.getElementById('difficult').style.height = '250px';
+document.getElementById('restart').style.visibility = 'visible';
     
-    //Отключаем смену сложности
-    document.getElementById('changer1').setAttribute('disabled', 'disabled');
-    document.getElementById('changer2').setAttribute('disabled', 'disabled');
-    document.getElementById('changer3').setAttribute('disabled', 'disabled');
-    //запускаем перед началом игры анимированый таймер
-    let count = 0;
-    for (let i = 3 ; i >= 1 ; i-- ) {
-    setTimeout( ()=>{ 
-        document.getElementById(`text${i}`).style.animationPlayState='running'; 
-            sound_of_horn1.play(); 
-    }, count*1000 );
-    count++;
-   }
+//Отключаем смену сложности
+document.getElementById('changer1').setAttribute('disabled', 'disabled');
+document.getElementById('changer2').setAttribute('disabled', 'disabled');
+document.getElementById('changer3').setAttribute('disabled', 'disabled');
 
-//Основная функция, которая отрисовует игру
+//запускаем перед началом игры анимированый таймер
+let count = 0;
+for (let i = 3 ; i >= 1 ; i-- ) {
+setTimeout( ()=>{ 
+    document.getElementById(`text${i}`).style.animationPlayState='running'; 
+    sound_of_horn1.play(); 
+                }, count*1000 );
+    count++;
+}
+
+//Основная функция, которая отрисовует игру!!!!
 function draw() {
-    if ( pause === false ) {
+//Включаем игру когда не стоит пауза
+if ( pause === false ) {
+    //Проверяем какую музыку запустить
     if ( speedCount === 15) {
         easy_music.play();
     }
@@ -156,74 +172,79 @@ function draw() {
     else {
         hard_music.play();
     }
-
     //На каждом шаге очищаем игровое поле
     ctx.clearRect(0,0,canvas.width,canvas.height);
     //Прорисовуем фоновую картинку
     ctx.drawImage(background, 0, 0);
     //Рисуем меню игровых очков 
     drawScore(score);
+
 // При каждой итерации, делаем поворот и смещение канваса так, что бы фрукт крутился.
 //Биндим команды 
 //!!!!!!
     let dx = food.x + 20, 
     dy = food.y + 20,
     time = new Date();
-
     ctx.save();
     ctx.translate(dx, dy);
     ctx.rotate(Math.sin(time / 500) / 2);
     ctx.translate(-dx, -dy);
 //!!!!!!
-
     ctx.drawImage(foodImg[randCount], food.x, food.y, 40, 40);
-
 //В конце возвращаем центральные оси канваса на место
 //!!!!!!!
     ctx.restore();
 //!!!!!!
-    if(dir === "left" && refr.x >= 0 ) refr.x = refr.x - 2 - ( score / speedCount );
-    else if(dir === "right" && refr.x <= 310 ) refr.x = refr.x + 2 + ( score / speedCount );
-    else if(dir === "down") refr.x += 0;
-    
+    //Рисуем миску, что-бы она перекрывала фрукт
+    ctx.drawImage(bowl, refr.x, refr.y, 90, 80);
+
+    //Проверяем куда двигать миску
+    if ( dir === "left" && refr.x >= 0 ) {
+        refr.x = refr.x - 2 - ( score / speedCount );
+    }
+    else if ( dir === "right" && refr.x <= 310 ) {
+        refr.x = refr.x + 2 + ( score / speedCount );
+    }
+    else if ( dir === "down" ) {
+        refr.x += 0;
+    }
+    //Бросаем еду
     food.y = food.y + 2 + Math.floor( (score / speedCount));
 
-    if (randCount === 5 && food.y >= refr.y - 20 && food.y <= refr.y - 15 && food.x + 40 <= refr.x + 90 && food.x >= refr.x ) {
-        catch_bonus.play();
-        score += 5;
-        food =  {
-            x: Math.floor(Math.random()*275+15),
-            y: -15,
-        }
-        randCount = Math.floor(Math.random()*5 + 1);
+//Условия когда ловим обычный фрукт, бонус, и условие проигрыша
+if (randCount === 5 && food.y >= refr.y - 20 && food.y <= refr.y - 15 && food.x + 20 <= refr.x + 90 && food.x + 20 >= refr.x ) {
+    catch_bonus.play();
+    score += 5;
+    food =  {
+        x: Math.floor(Math.random()*275+15),
+        y: -15,
+            }
+    randCount = Math.floor(Math.random()*5 + 1);
+}
+else if ( food.y >= refr.y - 20 && food.y <= refr.y - 15  && food.x + 20 <= refr.x + 90 && food.x + 20 >= refr.x ) {
+    catch_fruit.play();
+    score ++;
+    food = {
+        x: Math.floor(Math.random()*275+15),
+        y: -15,
+    };
+    randCount = Math.floor(Math.random()*5 + 1);
+}
+else if (food.y > refr.y + 17) {
+    if ( speedCount === 15 ) {
+        easy_music.pause();
     }
-
-     else if ( food.y >= refr.y - 20 && food.y <= refr.y - 15  && food.x + 40 <= refr.x + 90 && food.x >= refr.x ) {
-        catch_fruit.play();
-        score ++;
-        food = {
-            x: Math.floor(Math.random()*275+15),
-            y: -15,
-       };
-       randCount = Math.floor(Math.random()*5 + 1);
+    else if ( speedCount === 10 ) {
+        medium_music.pause();
     }
-    else if (food.y > refr.y + 17) {
-
-        if ( speedCount === 15 ) {
-            easy_music.pause();
-        }
-        else if ( speedCount === 10 ) {
-            medium_music.pause();
-        }
-        else {
-            hard_music.pause();
-        }
-
-        alert(`Game Over! You scored ${score} point`);
-        clearInterval(game);
-        location.reload();
+    else {
+        hard_music.pause();
     }
-    ctx.drawImage(bowl, refr.x, refr.y, 90, 80);
+    document.getElementById('endgame').innerHTML += `Game Over, you scored ${score} points!`;
+    document.getElementById('endgame').style.visibility = 'visible';
+    game_over.play();
+    clearInterval(game);
+    }
 }
 }
 ////////////////////////////////////////////////////
@@ -237,21 +258,18 @@ setTimeout(()=>{
 document.getElementById('start_game').onclick = function() {
     start();
 }
-document.addEventListener("keydown", ( event ) => { 
-    if (event.keyCode === 13) { 
-        start(); 
-    }
-});
+
 //Добавляем режим смены сложности и одновременно запускаем проигрыватель музыки
 for (let i = 1; i <= 3; i++) {
 document.getElementById(`changer${i}`).onclick = ()=> {
-    setSpeed(i);
-     if ( !press_button_in_diff.paused ) {
+setSpeed(i);
+if ( !press_button_in_diff.paused ) {
          press_button_in_diff.pause();
-     }
-     press_button_in_diff.play();
+}
+press_button_in_diff.play();
 }
 }
+
 //Включаем и выключаем звук в игре
 let flag = 0;
 document.getElementById('change_sound').onclick = function () {
@@ -270,6 +288,8 @@ document.getElementById('change_sound').onclick = function () {
         flag = 1;
     }
 }
+
+//Добавляем смену паузы на игру и наоборот
 document.getElementById('pause').onclick = function () {
     if (pause === false) {
         pause = true;
@@ -288,16 +308,23 @@ document.getElementById('pause').onclick = function () {
         }
     }
 }
+
+//Добавляем кнопку которая прекращает паузу
 document.getElementById('paused').onclick = function () {
     pause = false;
     document.getElementById('paused').style.visibility = 'hidden';
     for (let key in sounds_obj ) {
         sounds_obj[`${key}`].volume = 1;
     }
+    document.getElementById('play').src = 'img/pause.png';
 }
+
+//Рестарт
 document.getElementById('restart').onclick = function () {
     location.reload();
 }
+
+//Выпадающий блок при нажатие на кнопку правила игры
 let coll = document.getElementById('rules_button');
 coll.addEventListener('click', function() {
     let content = document.getElementById('rules');
