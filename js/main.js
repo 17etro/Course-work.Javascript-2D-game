@@ -20,7 +20,6 @@ let food = {
 const refr = {
   x: 150,
   y: 530,
-
 };
 //
 
