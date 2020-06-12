@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/17etro/-ourse-work-Javascript-2D-game.git"
+    "url": "git+https://github.com/17etro/Course-work-Javascript-2D-game.git"
   },
   "keywords": [
     "game",
@@ -23,9 +23,9 @@
   "author": "Petro Petruk <petrpetryk2016@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/17etro/-ourse-work-Javascript-2D-game/issues"
+    "url": "https://github.com/17etro/Course-work-Javascript-2D-game/issues"
   },
-  "homepage": "https://github.com/17etro/-ourse-work-Javascript-2D-game#readme",
+  "homepage": "https://github.com/17etro/Course-work-Javascript-2D-game#readme",
   "devDependencies": {
     "eslint": "^7.2.0"
   }
