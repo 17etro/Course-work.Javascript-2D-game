@@ -3,23 +3,26 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let score = 0;
 const foodImg = [];
-let randCount = Math.floor(Math.random() * 5 + 1);
 let dir;
 let speedCount = 15;
 let pause = false;
-
+let game;
+const foodHeight = 40,
+  foodWidth = 40,
+  bowlHeight = 80,
+  bowlWidth = 90;
 
 canvas.width = 400;
 canvas.height = 600;
 
 //Назначим изначальные координаты появления первого фрукта и миски
 let food = {
-  x: Math.floor(Math.random() * 275 + 15),
+  x: Math.floor(Math.random() * (canvas.width - foodWidth)),
   y: -15,
 };
 const refr = {
-  x: 150,
-  y: 530,
+  x: canvas.width / 2 - bowlWidth / 2,
+  y: canvas.height - (bowlHeight - 10),
 };
 //
 
@@ -34,9 +37,11 @@ const scoreImg = new Image();
 scoreImg.src = 'img/score.png';
 
 for (let i = 1; i <= 5; i++) {
-  foodImg[i] = new Image();
-  foodImg[i].src = 'img/' + i + '.png';
+  const image = new Image();
+  image.src = `img/${i}.png`;
+  foodImg.push(image);
 }
+let randCount = Math.floor(Math.random() * (foodImg.length - 1));
 /////////////////////////////////
 
 //Аудио сборник <-- Блок снизу
@@ -75,22 +80,32 @@ const sounds_obj = {
 направление миски при нажатие на стрелки и WASD */
 document.addEventListener('keydown', direction);
 function direction(event) {
-  if (event.keyCode === 37 || event.keyCode === 97 || event.keyCode === 65)
+  if (event.keyCode === 37 ||
+      event.keyCode === 97 ||
+      event.keyCode === 65) {
     dir = 'left';
-  else if (event.keyCode === 39 || event.keyCode === 68 || event.keyCode === 100)
+  } else if (event.keyCode === 39 ||
+           event.keyCode === 68 ||
+           event.keyCode === 100) {
     dir = 'right';
-  else if (event.keyCode === 40 || event.keyCode === 115 || event.keyCode === 83)
+  } else if (event.keyCode === 40 ||
+           event.keyCode === 115 ||
+           event.keyCode === 83) {
     dir = 'down';
+  }
 }
 //
 
-//Функция, которая выбирает значения скорости игры и окрашивает выбраную сложность тенью
+/* Функция, которая выбирает значения скорости игры
+и окрашивает выбраную сложность тенью */
 function setSpeed(count) {
   speedCount = 15 - (count - 1) * 5;
   for (let k = 1; k <= 3; k++) {
     document.getElementById(`changer${k}`).style.boxShadow = 'none';
   }
-  document.getElementById(`changer${count}`).style.boxShadow = '#b3923a 1.5px 1.5px 1.5px 1.5px';
+  document.getElementById(`changer${count}`)
+    .style
+    .boxShadow = '#b3923a 1.5px 1.5px 1.5px 1.5px';
 }
 //
 
@@ -178,7 +193,8 @@ function start() {
       //Рисуем меню игровых очков
       drawScore(score);
 
-      // При каждой итерации, делаем поворот и смещение канваса так, что бы фрукт крутился.
+      /* При каждой итерации, делаем поворот и смещение канваса так,
+       что бы фрукт крутился. */
       //Биндим команды
       //!!!!!!
       const dx = food.x + 20,
@@ -209,23 +225,23 @@ function start() {
       food.y = food.y + 2 + Math.floor((score / speedCount));
 
       //Условия когда ловим обычный фрукт, бонус, и условие проигрыша
-      if (randCount === 5 && food.y >= refr.y - 20 && food.y <= refr.y - 15 && food.x + 20 <= refr.x + 90 && food.x + 20 >= refr.x) {
-        catch_bonus.play();
-        score += 5;
-        food =  {
-          x: Math.floor(Math.random() * 275 + 15),
-          y: -15,
-        };
-        randCount = Math.floor(Math.random() * 5 + 1);
-      } else if (food.y >= refr.y - 20 && food.y <= refr.y - 15  && food.x + 20 <= refr.x + 90 && food.x + 20 >= refr.x) {
-        catch_fruit.play();
-        score++;
+      if (food.y >= refr.y - 20 &&
+        food.y <= refr.y - 15 &&
+        food.x + 20 <= refr.x + 90 &&
+        food.x + 20 >= refr.x) {
+        if (randCount === foodImg.length - 1) {
+          catch_bonus.play();
+          score += 5;
+        } else {
+          catch_fruit.play();
+          score++;
+        }
         food = {
-          x: Math.floor(Math.random() * 275 + 15),
+          x: Math.floor(Math.random() * (canvas.width - foodWidth)),
           y: -15,
         };
-        randCount = Math.floor(Math.random() * 5 + 1);
-      } else if (food.y > refr.y + 17) {
+        randCount = Math.floor(Math.random() * foodImg.length);
+      }  else if (food.y > refr.y + 17) {
         if (speedCount === 15) {
           easy_music.pause();
         } else if (speedCount === 10) {
@@ -233,15 +249,16 @@ function start() {
         } else {
           hard_music.pause();
         }
-        document.getElementById('endgame').innerHTML += `Game Over, you scored ${score} points!`;
-        document.getElementById('endgame').style.visibility = 'visible';
+        document.getElementById('endgame')
+          .innerHTML += `Game Over, you scored ${score} points!`;
+        document.getElementById('endgame')
+          .style.visibility = 'visible';
         game_over.play();
         clearInterval(game);
       }
     }
   }
-  ////////////////////////////////////////////////////
-  let game;
+  ///////////////////////////////////////////////////
   setTimeout(() => {
     game = setInterval(draw, 1000 / 60);
   }, 3000);
