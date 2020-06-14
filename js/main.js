@@ -7,10 +7,20 @@ let dir;
 let speedCount = 15;
 let pause = false;
 let game;
-const foodHeight = 40,
-  foodWidth = 40,
-  bowlHeight = 80,
-  bowlWidth = 90;
+
+let time, dx, dy;
+
+const foodHeight = 40;
+const foodWidth = 40;
+const bowlHeight = 80;
+const bowlWidth = 90;
+
+const diffCount = 3;
+const imageCount = 5;
+
+const minSpeedCount = 15;
+const mediumSpeedCount = 10;
+const maxSpeedCount = 5;
 
 canvas.width = 400;
 canvas.height = 600;
@@ -36,7 +46,7 @@ bowl.src = 'img/bowl.png';
 const scoreImg = new Image();
 scoreImg.src = 'img/score.png';
 
-for (let i = 1; i <= 5; i++) {
+for (let i = 1; i <= imageCount; i++) {
   const image = new Image();
   image.src = `img/${i}.png`;
   foodImg.push(image);
@@ -80,32 +90,22 @@ const sounds_obj = {
 направление миски при нажатие на стрелки и WASD */
 document.addEventListener('keydown', direction);
 function direction(event) {
-  if (event.keyCode === 37 ||
-      event.keyCode === 97 ||
-      event.keyCode === 65) {
-    dir = 'left';
-  } else if (event.keyCode === 39 ||
-           event.keyCode === 68 ||
-           event.keyCode === 100) {
-    dir = 'right';
-  } else if (event.keyCode === 40 ||
-           event.keyCode === 115 ||
-           event.keyCode === 83) {
-    dir = 'down';
-  }
+  const key = event.keyCode;
+  if ([37, 65, 97].includes(key))  dir = 'left';
+  else if ([39, 68, 100].includes(key)) dir = 'right';
+  else if ([40, 83, 115].includes(key)) dir = 'down';
 }
 //
 
 /* Функция, которая выбирает значения скорости игры
 и окрашивает выбраную сложность тенью */
 function setSpeed(count) {
-  speedCount = 15 - (count - 1) * 5;
-  for (let k = 1; k <= 3; k++) {
+  speedCount = minSpeedCount - (count - 1) * maxSpeedCount;
+  for (let k = 1; k <= diffCount; k++) {
     document.getElementById(`changer${k}`).style.boxShadow = 'none';
   }
-  document.getElementById(`changer${count}`)
-    .style
-    .boxShadow = '#b3923a 1.5px 1.5px 1.5px 1.5px';
+  const changer = document.getElementById(`changer${count}`);
+  changer.style.boxShadow = '#b3923a 1.5px 1.5px 1.5px 1.5px';
 }
 //
 
@@ -115,13 +115,23 @@ function visibility(nameID) {
 }
 //
 
+//
+function rotateFruit(dx, dy, time ) {
+  ctx.save();
+      ctx.translate(dx, dy);
+      ctx.rotate(Math.sin(time / 500) / 2);
+      ctx.translate(-dx, -dy);
+      ctx.drawImage(foodImg[randCount], food.x, food.y, foodWidth, foodHeight);
+      ctx.restore();
+}
+
 //Функция события нажатия Enter
+document.addEventListener('keydown', pressButtonEnter);
 function pressButtonEnter(event) {
   if (event.keyCode === 13) {
     start();
   }
 }
-document.addEventListener('keydown', pressButtonEnter);
 //
 
 //функция которая отрисовует игровые очки
@@ -179,9 +189,9 @@ function start() {
     //Включаем игру когда не стоит пауза
     if (pause === false) {
     //Проверяем какую музыку запустить
-      if (speedCount === 15) {
+      if (speedCount === minSpeedCount) {
         easy_music.play();
-      } else if (speedCount === 10) {
+      } else if (speedCount === mediumSpeedCount) {
         medium_music.play();
       } else {
         hard_music.play();
@@ -195,28 +205,19 @@ function start() {
 
       /* При каждой итерации, делаем поворот и смещение канваса так,
        что бы фрукт крутился. */
-      //Биндим команды
-      //!!!!!!
-      const dx = food.x + 20,
-        dy = food.y + 20,
-        time = new Date();
-      ctx.save();
-      ctx.translate(dx, dy);
-      ctx.rotate(Math.sin(time / 500) / 2);
-      ctx.translate(-dx, -dy);
-      //!!!!!!
-      ctx.drawImage(foodImg[randCount], food.x, food.y, 40, 40);
-      //В конце возвращаем центральные оси канваса на место
-      //!!!!!!!
-      ctx.restore();
-      //!!!!!!
+       
+      time = new Date();
+      dx = food.x + foodWidth / 2;
+      dy = food.y + foodHeight / 2;
+      rotateFruit(dx, dy, time);
+
       //Рисуем миску, что-бы она перекрывала фрукт
-      ctx.drawImage(bowl, refr.x, refr.y, 90, 80);
+      ctx.drawImage(bowl, refr.x, refr.y, bowlWidth, bowlHeight);
 
       //Проверяем куда двигать миску
       if (dir === 'left' && refr.x >= 0) {
         refr.x = refr.x - 2 - (score / speedCount);
-      } else if (dir === 'right' && refr.x <= 310) {
+      } else if (dir === 'right' && refr.x <= canvas.width - bowlWidth) {
         refr.x = refr.x + 2 + (score / speedCount);
       } else if (dir === 'down') {
         refr.x += 0;
@@ -225,10 +226,10 @@ function start() {
       food.y = food.y + 2 + Math.floor((score / speedCount));
 
       //Условия когда ловим обычный фрукт, бонус, и условие проигрыша
-      if (food.y >= refr.y - 20 &&
+      if (food.y >= refr.y - foodHeight / 2 &&
         food.y <= refr.y - 15 &&
-        food.x + 20 <= refr.x + 90 &&
-        food.x + 20 >= refr.x) {
+        food.x + foodWidth / 2 <= refr.x + bowlWidth &&
+        food.x + foodWidth / 2 >= refr.x) {
         if (randCount === foodImg.length - 1) {
           catch_bonus.play();
           score += 5;
@@ -242,9 +243,9 @@ function start() {
         };
         randCount = Math.floor(Math.random() * foodImg.length);
       }  else if (food.y > refr.y + 17) {
-        if (speedCount === 15) {
+        if (speedCount === minSpeedCount) {
           easy_music.pause();
-        } else if (speedCount === 10) {
+        } else if (speedCount === mediumSpeedCount) {
           medium_music.pause();
         } else {
           hard_music.pause();
