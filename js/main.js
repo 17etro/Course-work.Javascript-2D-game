@@ -84,6 +84,7 @@ const sounds_obj = {
   7: catch_bonus,
   8: game_over,
 };
+const sound_array = Object.values(sounds_obj);
 //////////////////////////////
 
 /* Функция, которая будет указывать
@@ -116,13 +117,13 @@ function visibility(nameID) {
 //
 
 //
-function rotateFruit(dx, dy, time ) {
+function rotateFruit(dx, dy, time) {
   ctx.save();
-      ctx.translate(dx, dy);
-      ctx.rotate(Math.sin(time / 500) / 2);
-      ctx.translate(-dx, -dy);
-      ctx.drawImage(foodImg[randCount], food.x, food.y, foodWidth, foodHeight);
-      ctx.restore();
+  ctx.translate(dx, dy);
+  ctx.rotate(Math.sin(time / 500) / 2);
+  ctx.translate(-dx, -dy);
+  ctx.drawImage(foodImg[randCount], food.x, food.y, foodWidth, foodHeight);
+  ctx.restore();
 }
 
 //Функция события нажатия Enter
@@ -205,7 +206,7 @@ function start() {
 
       /* При каждой итерации, делаем поворот и смещение канваса так,
        что бы фрукт крутился. */
-       
+
       time = new Date();
       dx = food.x + foodWidth / 2;
       dy = food.y + foodHeight / 2;
@@ -250,10 +251,9 @@ function start() {
         } else {
           hard_music.pause();
         }
-        document.getElementById('endgame')
-          .innerHTML += `Game Over, you scored ${score} points!`;
-        document.getElementById('endgame')
-          .style.visibility = 'visible';
+        const endgame = document.getElementById('endgame');
+        endgame.innerHTML += `Game Over, you scored ${score} points!`;
+        endgame.style.visibility = 'visible';
         game_over.play();
         clearInterval(game);
       }
@@ -286,35 +286,37 @@ let flag = 0;
 document.getElementById('change_sound').onclick = function() {
   if (flag === 1) {
     document.getElementById('sound').src = 'img/sound_on.png';
-    for (const key in sounds_obj) {
-      sounds_obj[`${key}`].volume = 1;
-    }
+    sound_array.forEach(value => {
+      value.volume = 1;
+    });
     flag = 0;
   } else  {
     document.getElementById('sound').src = 'img/sound_off.png';
-    for (const key in sounds_obj) {
-      sounds_obj[`${key}`].volume = 0;
-    }
+    sound_array.forEach(value => {
+      value.volume = 0;
+    });
     flag = 1;
   }
 };
 
 //Добавляем смену паузы на игру и наоборот
 document.getElementById('pause').onclick = function() {
+  const player = document.getElementById('paused');
+  const pauseImg = document.getElementById('play');
   if (pause === false) {
     pause = true;
-    document.getElementById('paused').style.visibility = 'visible';
-    document.getElementById('play').src = 'img/play.png';
-    for (const key in sounds_obj) {
-      sounds_obj[`${key}`].volume = 0;
-    }
+    player.style.visibility = 'visible';
+    pauseImg.src = 'img/play.png';
+    sound_array.forEach(value => {
+      value.volume = 0;
+    });
   } else {
     pause = false;
-    document.getElementById('paused').style.visibility = 'hidden';
-    document.getElementById('play').src = 'img/pause.png';
-    for (const key in sounds_obj) {
-      sounds_obj[`${key}`].volume = 1;
-    }
+    player.style.visibility = 'hidden';
+    pauseImg.src = 'img/pause.png';
+    sound_array.forEach(value => {
+      value.volume = 1;
+    });
   }
 };
 
@@ -322,8 +324,8 @@ document.getElementById('pause').onclick = function() {
 document.getElementById('paused').onclick = function() {
   pause = false;
   document.getElementById('paused').style.visibility = 'hidden';
-  for (const key in sounds_obj) {
-    sounds_obj[`${key}`].volume = 1;
+  for (const value of sounds_obj) {
+    value.volume = 1;
   }
   document.getElementById('play').src = 'img/pause.png';
 };
