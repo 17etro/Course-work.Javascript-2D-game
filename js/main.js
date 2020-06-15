@@ -324,9 +324,9 @@ document.getElementById('pause').onclick = function() {
 document.getElementById('paused').onclick = function() {
   pause = false;
   document.getElementById('paused').style.visibility = 'hidden';
-  for (const value of sounds_obj) {
+  sound_array.forEach(value => {
     value.volume = 1;
-  }
+  });
   document.getElementById('play').src = 'img/pause.png';
 };
 
