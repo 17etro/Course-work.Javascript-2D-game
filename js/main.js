@@ -44,6 +44,8 @@ const scoreY = 25;
 
 
 const halfSecond = 500;
+const oneSecond = 1000;
+const threeSecond = 3000;
 const startNumberCount = 3;
 
 canvas.width = 400;
@@ -207,7 +209,7 @@ function start() {
     setTimeout(() => {
       document.getElementById(`text${i}`).style.animationPlayState = 'running';
       sound_of_horn1.play();
-    }, count * 1000);
+    }, count * oneSecond);
     count++;
   }
 
@@ -288,7 +290,7 @@ function start() {
   ///////////////////////////////////////////////////
   setTimeout(() => {
     game = setInterval(draw, 1000 / 60);
-  }, 3000);
+  }, threeSecond);
 }
 
 //Добавляем нажатие конпки мышкой или через клавишу Enter
