@@ -108,7 +108,9 @@ const sounds_obj = {
   7: catch_bonus,
   8: game_over,
 };
-const sound_array = Object.values(sounds_obj);
+for (const value  of Object.values(sounds_obj)) {
+  console.log(value);
+}
 //////////////////////////////
 
 /* Функция, которая будет указывать
@@ -310,15 +312,15 @@ let flag = 0;
 document.getElementById('change_sound').onclick = function() {
   if (flag === 1) {
     document.getElementById('sound').src = 'img/sound_on.png';
-    sound_array.forEach(value => {
+    for (const value  of Object.values(sounds_obj)) {
       value.volume = 1;
-    });
+    }
     flag = 0;
   } else  {
     document.getElementById('sound').src = 'img/sound_off.png';
-    sound_array.forEach(value => {
+    for (const value  of Object.values(sounds_obj)) {
       value.volume = 0;
-    });
+    }
     flag = 1;
   }
 };
@@ -331,16 +333,16 @@ document.getElementById('pause').onclick = function() {
     pause = true;
     player.style.visibility = 'visible';
     pauseImg.src = 'img/play.png';
-    sound_array.forEach(value => {
+    for (const value  of Object.values(sounds_obj)) {
       value.volume = 0;
-    });
+    }
   } else {
     pause = false;
     player.style.visibility = 'hidden';
     pauseImg.src = 'img/pause.png';
-    sound_array.forEach(value => {
+    for (const value  of Object.values(sounds_obj)) {
       value.volume = 1;
-    });
+    }
   }
 };
 
@@ -348,9 +350,9 @@ document.getElementById('pause').onclick = function() {
 document.getElementById('paused').onclick = function() {
   pause = false;
   document.getElementById('paused').style.visibility = 'hidden';
-  sound_array.forEach(value => {
+  for (const value  of Object.values(sounds_obj)) {
     value.volume = 1;
-  });
+  }
   document.getElementById('play').src = 'img/pause.png';
 };
 
