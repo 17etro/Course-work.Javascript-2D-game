@@ -4,7 +4,6 @@ const ctx = canvas.getContext('2d');
 let score = 0;
 const foodImg = [];
 let dir;
-let speedCount = 15;
 let pause = false;
 let game;
 
@@ -14,13 +13,38 @@ const foodHeight = 40;
 const foodWidth = 40;
 const bowlHeight = 80;
 const bowlWidth = 90;
+const fruitStart = -15;
 
 const diffCount = 3;
 const imageCount = 5;
-
 const minSpeedCount = 15;
 const mediumSpeedCount = 10;
 const maxSpeedCount = 5;
+let speedCount = minSpeedCount;
+const speedValue = 2;
+const bonusValue = 5;
+const defaultValue = 1;
+
+const ARROW_LEFT = 37;
+const ARROW_RIGHT = 39;
+const ARROW_BOTTOM = 40;
+
+const BUTTON_d = 68;
+const BUTTON_s = 83;
+const BUTTON_a = 65;
+const BUTTON_ENTER = 13;
+
+const scorebarHeight = 35;
+const scoreImgX = 5;
+const scoreImgY = 5;
+const scoreImgHeight = 25;
+const scoreImgWidth = 25;
+const scoreX = 40;
+const scoreY = 25;
+
+
+const halfSecond = 500;
+const startNumberCount = 3;
 
 canvas.width = 400;
 canvas.height = 600;
@@ -28,11 +52,11 @@ canvas.height = 600;
 //Назначим изначальные координаты появления первого фрукта и миски
 let food = {
   x: Math.floor(Math.random() * (canvas.width - foodWidth)),
-  y: -15,
+  y: fruitStart,
 };
 const refr = {
   x: canvas.width / 2 - bowlWidth / 2,
-  y: canvas.height - (bowlHeight - 10),
+  y: canvas.height - (bowlHeight + fruitStart),
 };
 //
 
@@ -92,9 +116,9 @@ const sound_array = Object.values(sounds_obj);
 document.addEventListener('keydown', direction);
 function direction(event) {
   const key = event.keyCode;
-  if ([37, 65, 97].includes(key))  dir = 'left';
-  else if ([39, 68, 100].includes(key)) dir = 'right';
-  else if ([40, 83, 115].includes(key)) dir = 'down';
+  if ([ARROW_LEFT, BUTTON_a].includes(key))  dir = 'left';
+  else if ([ARROW_RIGHT, BUTTON_d].includes(key)) dir = 'right';
+  else if ([ARROW_BOTTOM, BUTTON_s].includes(key)) dir = 'down';
 }
 //
 
@@ -120,7 +144,7 @@ function visibility(nameID) {
 function rotateFruit(dx, dy, time) {
   ctx.save();
   ctx.translate(dx, dy);
-  ctx.rotate(Math.sin(time / 500) / 2);
+  ctx.rotate(Math.sin(time / halfSecond) / 2);
   ctx.translate(-dx, -dy);
   ctx.drawImage(foodImg[randCount], food.x, food.y, foodWidth, foodHeight);
   ctx.restore();
@@ -129,7 +153,7 @@ function rotateFruit(dx, dy, time) {
 //Функция события нажатия Enter
 document.addEventListener('keydown', pressButtonEnter);
 function pressButtonEnter(event) {
-  if (event.keyCode === 13) {
+  if (event.keyCode === BUTTON_ENTER) {
     start();
   }
 }
@@ -140,8 +164,8 @@ function drawScore(score) {
 //рисуем прямоугольник
   ctx.beginPath();
   ctx.moveTo(0, 0);
-  ctx.lineTo(0, 35);
-  ctx.lineTo(canvas.width, 35);
+  ctx.lineTo(0, scorebarHeight);
+  ctx.lineTo(canvas.width, scorebarHeight);
   ctx.lineTo(canvas.width, 0);
   ctx.lineTo(0, 0);
   ctx.strokeStyle = '#142743';
@@ -150,11 +174,11 @@ function drawScore(score) {
   ctx.fill();
   ctx.closePath();
   //рисуем арбуз
-  ctx.drawImage(scoreImg, 5, 5, 25, 25);
+  ctx.drawImage(scoreImg, scoreImgX, scoreImgY, scoreImgWidth, scoreImgHeight);
   //записываем очки рядом
   ctx.fillStyle = 'white';
   ctx.font = '20px Arial';
-  ctx.fillText(score, 40, 25);
+  ctx.fillText(score, scoreX, scoreY);
 }
 //
 
@@ -177,7 +201,7 @@ function start() {
 
   //запускаем перед началом игры анимированый таймер
   let count = 0;
-  for (let i = 3; i >= 1; i--) {
+  for (let i = startNumberCount; i >= 1; i--) {
     setTimeout(() => {
       document.getElementById(`text${i}`).style.animationPlayState = 'running';
       sound_of_horn1.play();
@@ -217,33 +241,33 @@ function start() {
 
       //Проверяем куда двигать миску
       if (dir === 'left' && refr.x >= 0) {
-        refr.x = refr.x - 2 - (score / speedCount);
+        refr.x = refr.x - speedValue - (score / speedCount);
       } else if (dir === 'right' && refr.x <= canvas.width - bowlWidth) {
-        refr.x = refr.x + 2 + (score / speedCount);
+        refr.x = refr.x + speedValue + (score / speedCount);
       } else if (dir === 'down') {
         refr.x += 0;
       }
       //Бросаем еду
-      food.y = food.y + 2 + Math.floor((score / speedCount));
+      food.y = food.y + speedValue + Math.floor((score / speedCount));
 
       //Условия когда ловим обычный фрукт, бонус, и условие проигрыша
       if (food.y >= refr.y - foodHeight / 2 &&
-        food.y <= refr.y - 15 &&
+        food.y <= refr.y + fruitStart &&
         food.x + foodWidth / 2 <= refr.x + bowlWidth &&
         food.x + foodWidth / 2 >= refr.x) {
         if (randCount === foodImg.length - 1) {
           catch_bonus.play();
-          score += 5;
+          score += bonusValue;
         } else {
           catch_fruit.play();
-          score++;
+          score += defaultValue;
         }
         food = {
           x: Math.floor(Math.random() * (canvas.width - foodWidth)),
-          y: -15,
+          y: fruitStart,
         };
         randCount = Math.floor(Math.random() * foodImg.length);
-      }  else if (food.y > refr.y + 17) {
+      }  else if (food.y > refr.y - fruitStart + 1) {
         if (speedCount === minSpeedCount) {
           easy_music.pause();
         } else if (speedCount === mediumSpeedCount) {
@@ -271,7 +295,7 @@ document.getElementById('start_game').onclick = function() {
 };
 
 //Добавляем режим смены сложности и одновременно запускаем проигрыватель музыки
-for (let i = 1; i <= 3; i++) {
+for (let i = 1; i <= diffCount; i++) {
   document.getElementById(`changer${i}`).onclick = () => {
     setSpeed(i);
     if (!press_button_in_diff.paused) {
